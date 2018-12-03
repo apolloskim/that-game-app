@@ -1,5 +1,5 @@
 body {
-  height: 100vh;
+  /* height: 100vh; */
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -8,6 +8,8 @@ body {
   justify-content: center;
   flex-direction: column;
   touch-action: none;
+  margin: 0;
+  padding: 0;
 }
 
 #title {
