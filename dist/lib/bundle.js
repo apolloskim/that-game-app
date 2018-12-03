@@ -373,6 +373,7 @@ class Game {
   }
 
   handleSwipe(e) {
+    e.preventDefault();
     if(e.touches.length === 1){
       //just one finger touched
       this.start = e.touches.item(0).clientX;
@@ -381,6 +382,7 @@ class Game {
   }
 
   handleSwipeEnd(e) {
+    e.preventDefault();
     var offset = 100;//at least 100px are a swipe
     if(this.start){
       // debugger
