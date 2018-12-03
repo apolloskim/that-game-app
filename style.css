@@ -1,0 +1,8 @@
+body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  background-image: linear-gradient(to right top, #f092ca, #ff9bb4, #ffa9a4, #fcba9e, #f2caa3, #f3cdaa, #f4cfb2, #f5d2b9, #f9ccc2, #f6c8ce, #ebc7da, #dbc8e3);
+  background-repeat: no-repeat;
+  justify-content: center;
+}
