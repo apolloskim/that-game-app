@@ -1,8 +1,70 @@
 body {
   height: 100vh;
+  overflow: hidden;
   display: flex;
   align-items: center;
-  background-image: linear-gradient(to right top, #f092ca, #ff9bb4, #ffa9a4, #fcba9e, #f2caa3, #f3cdaa, #f4cfb2, #f5d2b9, #f9ccc2, #f6c8ce, #ebc7da, #dbc8e3);
+  background-color: #DA9E72;
   background-repeat: no-repeat;
   justify-content: center;
+  flex-direction: column;
+}
+
+#title {
+  color: white;
+  font-family: arial;
+}
+
+.grid-container {
+  border: 4px solid white;
+  display: flex;
+}
+
+.grid-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-cell {
+  box-sizing: border-box;
+  padding: 50px;
+  border: 4px solid white;
+}
+
+.score-container {
+  /* display: flex;
+  flex-direction: row;
+  align-items: flex-end; */
+  width: 400px;
+}
+
+#score {
+  color: white;
+  font-family: arial;
+  font-size: 34px;
+  text-align: right;
+}
+
+#game-over {
+    color: #FFF;
+    text-align: center;
+    font-family: arial;
+    font-size: 34px;
+    background-color: #b3b3b3;
+    margin: 15% auto;
+    padding: 50px 20px;
+    border: 1px solid #888;
+    width: 40%;
+    opacity: 0;
+}
+
+#over {
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+  display: none;
 }
