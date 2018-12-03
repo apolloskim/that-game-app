@@ -9,6 +9,7 @@ body {
   background-repeat: no-repeat;
   justify-content: center;
   flex-direction: column;
+  touch-action: none;
 }
 
 #container {
