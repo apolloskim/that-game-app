@@ -1,15 +1,17 @@
 body {
-  /* height: 100vh; */
   overflow: hidden;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
   display: flex;
   align-items: center;
   background-color: #DA9E72;
   background-repeat: no-repeat;
   justify-content: center;
   flex-direction: column;
-  touch-action: none;
-  margin: 0;
-  padding: 0;
+}
+
+#container {
 }
 
 #title {
@@ -17,9 +19,6 @@ body {
   font-family: arial;
 }
 
-canvas {
-  touch-action: none;
-}
 
 .score-container {
   /* display: flex;
