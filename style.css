@@ -4,18 +4,19 @@ html{
 }
 
 body {
-  position:fixed;
+  /* position:fixed; */
   max-height: 100%;
   overflow: auto;
   margin: 0;
   padding: 0;
   display: flex;
   align-items: center;
-  background-color: #DA9E72;
+  background-color: #181818;
   background-repeat: no-repeat;
   justify-content: center;
   flex-direction: column;
   touch-action: none;
+  padding-top: 100px;
 }
 
 #container {
