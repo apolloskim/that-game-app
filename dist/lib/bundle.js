@@ -118,6 +118,9 @@ document.addEventListener("DOMContentLoaded", () => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Board; });
+/* harmony import */ var _tile_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tile.js */ "./lib/tile.js");
+
+
 class Board {
   constructor() {
     this.grid = [
@@ -126,18 +129,12 @@ class Board {
       [0,0,0,0],
       [0,0,0,0]
     ];
+    this.tileIds = {};
     this.score = 0;
     this.previousBoard = null;
     this.position = [[]];
-    this.canvas = document.getElementById("canvas");
-    this.context = this.canvas.getContext("2d");
     this.scoreTag = document.getElementById("score");
-    this.colors = [
-      ['white', 'white', 'white', 'white'],
-      ['white', 'white', 'white', 'white'],
-      ['white', 'white', 'white', 'white'],
-      ['white', 'white', 'white', 'white']
-    ];
+    this.newTile = [];
   }
 
   addNumber() {
@@ -149,23 +146,28 @@ class Board {
         }
       }
     }
-    let idx = unfilled[Math.floor(Math.random() * unfilled.length)];
-    this.grid[idx.x][idx.y] = Math.floor(Math.random() * 5) > 2 ? 4 : 2;
+    if (unfilled.length > 0) {
+      let idx = unfilled[Math.floor(Math.random() * unfilled.length)];
+      let randNum = Math.floor(Math.random() * 5) > 2 ? 4 : 2;
+      this.grid[idx.x][idx.y] = new _tile_js__WEBPACK_IMPORTED_MODULE_0__["default"](randNum, false, true, null, {x: idx.x, y: idx.y}, null, Math.random(), null);
+      this.tileIds[this.grid[idx.x][idx.y].id] = {x: idx.x, y: idx.y};
+    }
   }
 
-  slide(row) {
-    const arr = row.filter(value => value);
+  slide(row, rowPos) {
+    const arr = row.filter(cell => cell instanceof _tile_js__WEBPACK_IMPORTED_MODULE_0__["default"]);
     const unfilled = Array(4 - arr.length).fill(0);
     const newArr = unfilled.concat(arr);
     return newArr;
   }
 
-  combine(row, row_pos) {
+  combine(row, rowPos) {
     for (var i = 3; i > 0; i--) {
-      if (row[i] === row[i - 1]) {
-        row[i] = row[i] * 2;
+      if (row[i] instanceof _tile_js__WEBPACK_IMPORTED_MODULE_0__["default"] && row[i - 1] instanceof _tile_js__WEBPACK_IMPORTED_MODULE_0__["default"] && row[i].value === row[i - 1].value) {
+        row[i] = new _tile_js__WEBPACK_IMPORTED_MODULE_0__["default"](row[i].value * 2, true, false, null, null, null, Math.random(), [row[i].id, row[i - 1].id]);
+        // row[i].mergedFrom = [row[i].id, row[i - 1].id];
         row[i - 1] = 0;
-        this.score += row[i];
+        this.score += row[i].value;
       }
     }
     return row;
@@ -201,8 +203,8 @@ class Board {
       [0, 0, 0, 0]
     ];
 
-    for (var i = 0; i < 4; i++) {
-      for (var j = 0; j < 4; j++) {
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
         prevGrid[i][j] = this.grid[i][j];
       }
     }
@@ -210,71 +212,88 @@ class Board {
   }
 
   fillNumbers() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.scoreTag.innerHTML = this.score;
-
-    for (let i = 0; i < this.grid.length; i++) {
-      for (let j = 0; j < this.grid[i].length; j++) {
-        if (this.grid[i][j] !== 0) {
-          if (this.grid[i][j] === 8) {
-            this.colors[i][j] = '#CFD770';
-          } else if (this.grid[i][j] === 16) {
-            this.colors[i][j] = '#DA7E72';
-          } else if (this.grid[i][j] === 32) {
-            this.colors[i][j] = '#AF5B8B';
-          } else if (this.grid[i][j] === 64) {
-            this.colors[i][j] = '#765192';
-          } else if (this.grid[i][j] === 128) {
-            this.colors[i][j] = '#56A567';
-          } else if (this.grid[i][j] === 256) {
-            this.colors[i][j] = "#DAD672";
-          } else if (this.grid[i][j] === 512) {
-            this.colors[i][j] = "#F7012D";
-          } else if (this.grid[i][j] === 1024) {
-            this.colors[i][j] = "#E70183";
-          } else if (this.grid[i][j] === 2048) {
-            this.colors[i][j] = "#FF7503";
-          } else {
-            this.colors[i][j] = 'white';
-          }
-
-          this.context.font = "35px arial";
-          this.context.fillStyle = this.colors[i][j];
-          this.context.fillText(this.grid[i][j], i * 100 + (100 / 2), j * 100 + (100 / 2));
+    // this.grid = this.inverse();
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.grid[i][j]) {
+          this.addTile(this.grid[i][j], [i, j]);
         }
       }
     }
 
-    this.context.strokeStyle = "white";
-    this.context.stroke();
+    this.newTile.forEach(tile => {
+      let tileOuter = document.createElement('div');
+      let tileInner = document.createElement('div');
+
+      tileOuter.setAttribute('class', `tile tile-${tile.value} tile-position-${tile.pos.x + 1}-${tile.pos.y + 1} new`);
+      tileInner.setAttribute('class', 'tile-inner');
+      tileInner.innerHTML = tile.value;
+      let tileContainer = document.querySelectorAll('.tile-container')[0];
+      tileOuter.appendChild(tileInner);
+      tileContainer.appendChild(tileOuter);
+    });
+
+    this.newTile = [];
+
+  }
+
+  addTile(tile, pos) {
+    let tileOuter = document.createElement('div');
+    let tileInner = document.createElement('div');
+
+
+    if (tile.isNew) {
+      this.newTile.push(tile);
+      // tileOuter.setAttribute('class', `tile tile-${tile.value} tile-position-${pos[0] + 1}-${pos[1] + 1}`);
+      // tileInner.setAttribute('class', 'tile-inner');
+      // tileInner.innerHTML = tile.value;
+      // let tileContainer = document.querySelectorAll('.tile-container')[0];
+      // tileOuter.appendChild(tileInner);
+      // tileContainer.appendChild(tileOuter);
+    } else if (tile.merged) {
+
+      document.querySelectorAll(`.tile-position-${this.tileIds[tile.mergedFrom[0]].x + 1}-${this.tileIds[tile.mergedFrom[0]].y + 1}`)[0].remove();
+      document.querySelectorAll(`.tile-position-${this.tileIds[tile.mergedFrom[1]].x + 1}-${this.tileIds[tile.mergedFrom[1]].y + 1}`)[0].remove();
+      tileOuter.setAttribute('class', `tile tile-${tile.value} tile-position-${tile.pos.x + 1}-${tile.pos.y + 1} merged`);
+      tileInner.setAttribute('class', 'tile-inner');
+      tileInner.innerHTML = tile.value;
+      // debugger
+      // document.querySelectorAll(`.tile-position-${pos[0] + 1}-${pos[1] + 1}`)[0].remove();
+      let tileContainer = document.querySelectorAll('.tile-container')[0];
+      tileOuter.appendChild(tileInner);
+      tileContainer.appendChild(tileOuter);
+      let mergedId = tile.mergedFrom;
+      tile.mergedFrom.forEach(id => {
+        delete this.tileIds[id];
+      });
+      // delete this.tileIds[mergedId];
+    } else {
+        window.requestAnimationFrame(() => {
+          let tileP = document.querySelectorAll(`.tile-${tile.value}.tile-position-${tile.prevPos.x + 1}-${tile.prevPos.y + 1}`)[0];
+          // debugger
+          // tileP.classList.remove(`tile-position-${tile.prevPos.x + 1}-${tile.prevPos.y + 1}`);
+          tileP.setAttribute('class', `tile tile-${tile.value} tile-position-${tile.pos.x + 1}-${tile.pos.y + 1}`);
+          // debugger
+          // tileP.classList.add(`tile-position-${tile.pos.x + 1}-${tile.pos.y + 1}`);
+        });
+    }
+
+
+    // let tilePosition = document.querySelectorAll(`.${tileOuter.className.split(' ')[2]}`);
+
   }
 
   drawBoard() {
-    const p = 10;
-
-
-    const bw = 400;
-    const bh = 400;
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.scoreTag.innerHTML = this.score;
-    this.context.textAlign = "center";
-    this.context.textBaseline = "top";
-    for (var x = 0; x <= bw; x += 100) {
-        this.context.moveTo(2 + x + p, p);
-        this.context.lineTo(2 + x + p, bh + p);
-    }
-
-
-    for (var x = 0; x <= bh; x += 100) {
-        this.context.moveTo(p, 2 + x + p);
-        this.context.lineTo(bw + p, 2 + x + p);
-    }
-
-
-    this.context.strokeStyle = "white";
-    this.context.stroke();
-
+    window.requestAnimationFrame(() => {
+      let tileContainer = document.querySelectorAll('.tile-container')[0];
+      // while (tileContainer.firstChild) {
+      //   tileContainer.removeChild(tileContainer.firstChild);
+      // }
+      this.fillNumbers();
+      this.scoreTag.innerHTML = `Score: ${this.score}`;
+    });
   }
+
 }
 
 
@@ -291,6 +310,8 @@ class Board {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Game; });
 /* harmony import */ var _board_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./board.js */ "./lib/board.js");
+/* harmony import */ var _tile_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./tile.js */ "./lib/tile.js");
+
 
 
 
@@ -303,37 +324,79 @@ class Game {
     this.handleSwipe = this.handleSwipe.bind(this);
     this.handleSwipeEnd = this.handleSwipeEnd.bind(this);
     this.start = null;
+    this.down = false;
   }
 
   setup() {
     this.board.addNumber();
     this.board.addNumber();
+    console.log(this.board.grid);
+    console.log(this.board.tileIds);
+    let invertedBoard = this.board.inverse();
+    console.log(`------------------------------`);
+    let tileStr = '';
+    invertedBoard.forEach(row => {
+      let tileArr = [];
+      row.forEach(tile => {
+        tileArr.push(tile instanceof _tile_js__WEBPACK_IMPORTED_MODULE_1__["default"] ? tile.value : 0);
+      });
+      tileStr += `| ${tileArr.join(' | ')} |\n`;
+    });
+    console.log(tileStr);
+    console.log(`------------------------------`);
     this.board.drawBoard();
-    this.board.fillNumbers();
   }
 
   handleKey(e) {
-
     let flipped = false;
     let inversed = false;
     let pressed = false;
+
+    this.board.grid.forEach(row => {
+      row.forEach(tile => {
+        if (tile instanceof _tile_js__WEBPACK_IMPORTED_MODULE_1__["default"]) {
+          tile.prevPos = tile.pos;
+          tile.isNew = false;
+          tile.merged = false;
+          tile.mergedFrom = null;
+        }
+      })
+    });
+
+    // this.board.tileIds = {};
+    //
+    // for (let i = 0; i < 4; i++) {
+    //   for (let j = 0; j < 4; j++) {
+    //     if (this.board.grid[i][j] instanceof Tile) {
+    //       this.board.tileIds[this.board.grid[i][j].id] = {x: i, y: j};
+    //     }
+    //   }
+    // }
+
     switch(e.code) {
       case "ArrowUp":
         this.board.reverse();
+
         flipped = true;
         pressed = true;
         break;
       case "ArrowDown":
         pressed = true;
+
+
         break;
       case "ArrowRight":
         this.board.grid = this.board.inverse();
+        // debugger
         inversed = true;
         pressed = true;
+
+
         break;
       case "ArrowLeft":
         this.board.grid = this.board.inverse();
         this.board.reverse();
+        // debugger
         inversed = true;
         flipped = true;
         pressed = true;
@@ -342,9 +405,9 @@ class Game {
 
     if (pressed) {
       for (var i = 0; i < 4; i++) {
-        this.board.grid[i] = this.board.slide(this.board.grid[i]);
+        this.board.grid[i] = this.board.slide(this.board.grid[i], i);
         this.board.grid[i] = this.board.combine(this.board.grid[i], i);
-        this.board.grid[i] = this.board.slide(this.board.grid[i]);
+        this.board.grid[i] = this.board.slide(this.board.grid[i], i);
       }
 
       if (flipped) {
@@ -354,22 +417,57 @@ class Game {
       if (inversed) {
         this.board.grid = this.board.inverse();
       }
-      this.board.fillNumbers();
+
+      // this.board.tileIds = {};
+
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+          if (this.board.grid[i][j] instanceof _tile_js__WEBPACK_IMPORTED_MODULE_1__["default"]) {
+            this.board.grid[i][j].pos = {x: i, y: j};
+            this.board.tileIds[this.board.grid[i][j].id] = {x: i, y: j};
+          }
+        }
+      }
+
+      // debugger
+
       this.board.addNumber();
+      this.board.drawBoard();
+      console.log(this.board.grid);
+      console.log(this.board.tileIds);
+      let invertedBoard = this.board.inverse();
+      console.log(`------------------------------`);
+      let tileStr = '';
+      invertedBoard.forEach(row => {
+        let tileArr = [];
+        row.forEach(tile => {
+          tileArr.push(tile instanceof _tile_js__WEBPACK_IMPORTED_MODULE_1__["default"] ? tile.value : 0);
+        });
+        tileStr += `| ${tileArr.join(' | ')} |\n`;
+      });
+      console.log(tileStr);
+      console.log(`------------------------------`);
     }
   }
 
   handlePress(e) {
+    if (this.down) return;
     e.preventDefault();
+    this.down = true;
+    // debugger
     if (this.gameOver()) {
-      document.getElementById('game-over').style.opacity = 1;
-      document.getElementById('game-over').style.transition = "all 2s";
-      document.getElementById('game-over').innerHTML = "Game Over!";
-      document.getElementById('over').style.display = 'block';
+      // document.getElementById('game-over').style.opacity = 1;
+      // document.getElementById('game-over').style.transition = "all 2s";
+      // document.getElementById('game-over').innerHTML = "Game Over!";
+      // document.getElementById('over').style.display = 'block';
+      document.querySelectorAll('.game-over')[0].style.visibility = 'visible';
+      document.querySelectorAll('.game-over')[0].innerHTML = 'Game Over!'
       this.removeKeyPress();
     } else {
       this.handleKey(e);
     }
+    this.down = false;
+    // debugger
   }
 
   handleSwipe(e) {
@@ -387,7 +485,6 @@ class Game {
     e.stopPropagation();
     var offset = 100;//at least 100px are a swipe
     if(this.start){
-      // debugger
       //the only finger that hit the screen left it
       var end = event.changedTouches.item(0).clientX;
       var endY = event.changedTouches.item(0).clientY;
@@ -420,9 +517,9 @@ class Game {
       }
 
       for (var i = 0; i < 4; i++) {
-        this.board.grid[i] = this.board.slide(this.board.grid[i]);
+        this.board.grid[i] = this.board.slide(this.board.grid[i], i);
         this.board.grid[i] = this.board.combine(this.board.grid[i], i);
-        this.board.grid[i] = this.board.slide(this.board.grid[i]);
+        this.board.grid[i] = this.board.slide(this.board.grid[i], i);
       }
 
       if (flipped) {
@@ -432,9 +529,8 @@ class Game {
       if (inversed) {
         this.board.grid = this.board.inverse();
       }
-      this.board.fillNumbers();
       this.board.addNumber();
-
+      this.board.drawBoard();
     }
   }
 
@@ -442,8 +538,12 @@ class Game {
     window.removeEventListener("keydown", this.handlePress);
   }
 
+  addKeyPress() {
+    window.addEventListener('keydown', this.handlePress);
+  }
+
   play() {
-    window.addEventListener("keydown", this.handlePress);
+    this.addKeyPress();
     window.addEventListener("touchstart", this.handleSwipe);
     window.addEventListener("touchend", this.handleSwipeEnd);
   }
@@ -451,18 +551,43 @@ class Game {
   gameOver() {
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        // debugger
         if (this.board.grid[i][j] === 0) {
           return false;
         }
-        if (this.board.grid[i][j] === this.board.grid[i][j + 1] || this.board.inverse()[i][j] === this.board.inverse()[i][j + 1]) {
+
+        if (j < 3 && (this.board.grid[i][j].value === this.board.grid[i][j + 1].value || this.board.inverse()[i][j].value === this.board.inverse()[i][j + 1].value)) {
           return false;
         }
       }
     }
     return true;
   }
+}
 
+
+/***/ }),
+
+/***/ "./lib/tile.js":
+/*!*********************!*\
+  !*** ./lib/tile.js ***!
+  \*********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return tile; });
+class tile {
+  constructor(value, merged, isNew, movedFrom, pos, prevPos, id, mergedFrom) {
+    this.value = value;
+    this.merged = merged;
+    this.isNew = isNew;
+    this.mergedFrom = mergedFrom;
+    this.movedFrom = movedFrom;
+    this.pos = pos;
+    this.prevPos = prevPos;
+    this.id = id;
+  }
 }
 
 
