@@ -25,4 +25,8 @@ According to the direction of the arrow, the tiles will slide accordingly. After
 
 **Languages Used**
 
-HTML, CSS, and vanilla Javascript was used to create this game.
+HTML, CSS, and Javascript was used to create this game.
+
+* *HTML*: Used to structure the initial page layout.
+* *CSS*: Used to style the board, tile animation, and the general page.
+* *Javascript*: Used to create the board class, tile class, and the game class.
