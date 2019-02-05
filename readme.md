@@ -4,7 +4,7 @@
 
 ![Alt Text](2048-demo.gif)
 
-### **Overview**
+### Overview
 
 2048: *Combine Numbers!* is inspired by the original [2048](https://play2048.co/) game.
 
@@ -12,7 +12,7 @@ The objective is to slide numbered tiles on a grid to combine them to a create a
 
 Depending on which arrow key you press, the grid will slide to that direction. The tiles with the same number will merge, creating a new tile with double the number.
 
-### **How to Play**
+### How to Play
 
 There are four ways to move the tiles:
 
@@ -23,7 +23,7 @@ There are four ways to move the tiles:
 
 According to the direction of the arrow, the tiles will slide accordingly. After sliding, if the tiles that are adjacent to each other have the same number, they will merge to create a new tile with double the value. Once you create a new tile with the number 2048, you have won the game. The game will be over and you have lost if the grid is filled entirely with numbered tiles, none of which have any neighbor tiles with the same number.
 
-### **Languages Used**
+### Languages Used
 
 HTML, CSS, and Javascript was used to create this game.
 
@@ -31,7 +31,7 @@ HTML, CSS, and Javascript was used to create this game.
 * *CSS*: Used to style the board, tile animation, and the general page.
 * *Javascript*: Used to create the board class, tile class, and the game class.
 
-### **Features**
+### Features
 
 I used *requestAnimationFrame()* to update the DOM every time a user presses a key. There were three conditions that I had to consider before updating the tiles.
 
@@ -111,3 +111,7 @@ drawBoard() {
   });
 }
 ```
+
+### Future Plans
+* Add better styling for tiles with numbers over 256.
+* Add a ranking table of users based on the number of points won.
