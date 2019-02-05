@@ -88,3 +88,29 @@ addTile(tile, pos) {
   ...
 }
 ```
+
+3. If the tile was neither **new** or **merged**, then I simply replaced its CSS class from its previous position to its new position:
+
+```Javascript
+addTile(tile, pos) {
+  ...
+  else {
+      window.requestAnimationFrame(() => {
+        let tileP = document.querySelectorAll(`.tile-${tile.value}.tile-position-${tile.prevPos.x + 1}-${tile.prevPos.y + 1}`)[0];
+        tileP.setAttribute('class', `tile tile-${tile.value} tile-position-${tile.pos.x + 1}-${tile.pos.y + 1}`);
+      });
+  }
+}
+```
+
+Thus, the function for updating the DOM is as such:
+
+```Javascript
+drawBoard() {
+  window.requestAnimationFrame(() => {
+    let tileContainer = document.querySelectorAll('.tile-container')[0];
+    this.fillNumbers();
+    this.scoreTag.innerHTML = `Score: ${this.score}`;
+  });
+}
+```
