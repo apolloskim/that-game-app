@@ -240,7 +240,6 @@ class Board {
     let tileOuter = document.createElement('div');
     let tileInner = document.createElement('div');
 
-
     if (tile.isNew) {
       this.newTile.push(tile);
     } else if (tile.merged) {
