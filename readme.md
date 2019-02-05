@@ -35,7 +35,7 @@ HTML, CSS, and Javascript was used to create this game.
 
 I used *requestAnimationFrame()* to update the DOM every time a user presses a key. There were three conditions that I had to consider before updating the tiles.
 
-1. If the tile was new, I pushed the tile to an array, and created a new HTML element, appending it to the the *tile-container* in the DOM:
+1. If the tile was **new**, I pushed the tile to an array, and for each tile in the array, created a new HTML element, appending it to the the *tile-container* in the DOM:
 
 ```Javascript
 addTile(tile, pos) {
@@ -61,5 +61,30 @@ fillNumbers() {
   });
 
   this.newTile = [];
+}
+```
+
+2. If the tile was **merged** from two previous tiles, I created a new HTML element, appended to the tile-container in the DOM, then deleted the previous tile in the DOM:
+
+```Javascript
+addTile(tile, pos) {
+  let tileOuter = document.createElement('div');
+  let tileInner = document.createElement('div');
+  ...
+   else if (tile.merged) {
+    document.querySelectorAll(`.tile-position-${this.tileIds[tile.mergedFrom[0]].x + 1}-${this.tileIds[tile.mergedFrom[0]].y + 1}`)[0].remove();
+    document.querySelectorAll(`.tile-position-${this.tileIds[tile.mergedFrom[1]].x + 1}-${this.tileIds[tile.mergedFrom[1]].y + 1}`)[0].remove();
+    tileOuter.setAttribute('class', `tile tile-${tile.value} tile-position-${tile.pos.x + 1}-${tile.pos.y + 1} merged`);
+    tileInner.setAttribute('class', 'tile-inner');
+    tileInner.innerHTML = tile.value;
+    let tileContainer = document.querySelectorAll('.tile-container')[0];
+    tileOuter.appendChild(tileInner);
+    tileContainer.appendChild(tileOuter);
+    let mergedId = tile.mergedFrom;
+    tile.mergedFrom.forEach(id => {
+      delete this.tileIds[id];
+    });
+  }
+  ...
 }
 ```
