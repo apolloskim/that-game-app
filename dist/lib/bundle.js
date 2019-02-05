@@ -212,7 +212,6 @@ class Board {
   }
 
   fillNumbers() {
-    // this.grid = this.inverse();
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
         if (this.grid[i][j]) {
@@ -244,12 +243,6 @@ class Board {
 
     if (tile.isNew) {
       this.newTile.push(tile);
-      // tileOuter.setAttribute('class', `tile tile-${tile.value} tile-position-${pos[0] + 1}-${pos[1] + 1}`);
-      // tileInner.setAttribute('class', 'tile-inner');
-      // tileInner.innerHTML = tile.value;
-      // let tileContainer = document.querySelectorAll('.tile-container')[0];
-      // tileOuter.appendChild(tileInner);
-      // tileContainer.appendChild(tileOuter);
     } else if (tile.merged) {
 
       document.querySelectorAll(`.tile-position-${this.tileIds[tile.mergedFrom[0]].x + 1}-${this.tileIds[tile.mergedFrom[0]].y + 1}`)[0].remove();
@@ -257,8 +250,6 @@ class Board {
       tileOuter.setAttribute('class', `tile tile-${tile.value} tile-position-${tile.pos.x + 1}-${tile.pos.y + 1} merged`);
       tileInner.setAttribute('class', 'tile-inner');
       tileInner.innerHTML = tile.value;
-      // debugger
-      // document.querySelectorAll(`.tile-position-${pos[0] + 1}-${pos[1] + 1}`)[0].remove();
       let tileContainer = document.querySelectorAll('.tile-container')[0];
       tileOuter.appendChild(tileInner);
       tileContainer.appendChild(tileOuter);
@@ -266,29 +257,17 @@ class Board {
       tile.mergedFrom.forEach(id => {
         delete this.tileIds[id];
       });
-      // delete this.tileIds[mergedId];
     } else {
         window.requestAnimationFrame(() => {
           let tileP = document.querySelectorAll(`.tile-${tile.value}.tile-position-${tile.prevPos.x + 1}-${tile.prevPos.y + 1}`)[0];
-          // debugger
-          // tileP.classList.remove(`tile-position-${tile.prevPos.x + 1}-${tile.prevPos.y + 1}`);
           tileP.setAttribute('class', `tile tile-${tile.value} tile-position-${tile.pos.x + 1}-${tile.pos.y + 1}`);
-          // debugger
-          // tileP.classList.add(`tile-position-${tile.pos.x + 1}-${tile.pos.y + 1}`);
         });
     }
-
-
-    // let tilePosition = document.querySelectorAll(`.${tileOuter.className.split(' ')[2]}`);
-
   }
 
   drawBoard() {
     window.requestAnimationFrame(() => {
       let tileContainer = document.querySelectorAll('.tile-container')[0];
-      // while (tileContainer.firstChild) {
-      //   tileContainer.removeChild(tileContainer.firstChild);
-      // }
       this.fillNumbers();
       this.scoreTag.innerHTML = `Score: ${this.score}`;
     });
@@ -330,20 +309,20 @@ class Game {
   setup() {
     this.board.addNumber();
     this.board.addNumber();
-    console.log(this.board.grid);
-    console.log(this.board.tileIds);
-    let invertedBoard = this.board.inverse();
-    console.log(`------------------------------`);
-    let tileStr = '';
-    invertedBoard.forEach(row => {
-      let tileArr = [];
-      row.forEach(tile => {
-        tileArr.push(tile instanceof _tile_js__WEBPACK_IMPORTED_MODULE_1__["default"] ? tile.value : 0);
-      });
-      tileStr += `| ${tileArr.join(' | ')} |\n`;
-    });
-    console.log(tileStr);
-    console.log(`------------------------------`);
+    // console.log(this.board.grid);
+    // console.log(this.board.tileIds);
+    // let invertedBoard = this.board.inverse();
+    // console.log(`------------------------------`);
+    // let tileStr = '';
+    // invertedBoard.forEach(row => {
+    //   let tileArr = [];
+    //   row.forEach(tile => {
+    //     tileArr.push(tile instanceof Tile ? tile.value : 0);
+    //   });
+    //   tileStr += `| ${tileArr.join(' | ')} |\n`;
+    // });
+    // console.log(tileStr);
+    // console.log(`------------------------------`);
     this.board.drawBoard();
   }
 
@@ -418,8 +397,6 @@ class Game {
         this.board.grid = this.board.inverse();
       }
 
-      // this.board.tileIds = {};
-
       for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
           if (this.board.grid[i][j] instanceof _tile_js__WEBPACK_IMPORTED_MODULE_1__["default"]) {
@@ -429,24 +406,22 @@ class Game {
         }
       }
 
-      // debugger
-
       this.board.addNumber();
       this.board.drawBoard();
-      console.log(this.board.grid);
-      console.log(this.board.tileIds);
-      let invertedBoard = this.board.inverse();
-      console.log(`------------------------------`);
-      let tileStr = '';
-      invertedBoard.forEach(row => {
-        let tileArr = [];
-        row.forEach(tile => {
-          tileArr.push(tile instanceof _tile_js__WEBPACK_IMPORTED_MODULE_1__["default"] ? tile.value : 0);
-        });
-        tileStr += `| ${tileArr.join(' | ')} |\n`;
-      });
-      console.log(tileStr);
-      console.log(`------------------------------`);
+      // console.log(this.board.grid);
+      // console.log(this.board.tileIds);
+      // let invertedBoard = this.board.inverse();
+      // console.log(`------------------------------`);
+      // let tileStr = '';
+      // invertedBoard.forEach(row => {
+      //   let tileArr = [];
+      //   row.forEach(tile => {
+      //     tileArr.push(tile instanceof Tile ? tile.value : 0);
+      //   });
+      //   tileStr += `| ${tileArr.join(' | ')} |\n`;
+      // });
+      // console.log(tileStr);
+      // console.log(`------------------------------`);
     }
   }
 
