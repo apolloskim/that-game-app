@@ -64,7 +64,7 @@ fillNumbers() {
 }
 ```
 
-2. If the tile was **merged** from two previous tiles, I created a new HTML element, appended to the tile-container in the DOM, then deleted the previous tile in the DOM:
+2. If the tile was **merged** from two previous tiles, I created a new HTML element, set its class to the new position, appended to the tile-container in the DOM, then deleted the previous tile in the DOM:
 
 ```Javascript
 addTile(tile, pos) {
@@ -80,10 +80,7 @@ addTile(tile, pos) {
     let tileContainer = document.querySelectorAll('.tile-container')[0];
     tileOuter.appendChild(tileInner);
     tileContainer.appendChild(tileOuter);
-    let mergedId = tile.mergedFrom;
-    tile.mergedFrom.forEach(id => {
-      delete this.tileIds[id];
-    });
+    ...
   }
   ...
 }
