@@ -1,6 +1,6 @@
 # 2048: Combine Numbers!
 
-[Play here!](https://apolloskim.github.io/that-game-app/)
+[Play here!](https://apolloskim.github.io/2048-Combine-Numbers/)
 
 ![Alt Text](2048-demo.gif)
 
