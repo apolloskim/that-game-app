@@ -227,7 +227,7 @@ body {
 }
 
 .tile.tile-256 .tile-inner {
-  background: #CFFFE5;
+  background: #4e42f4;
 }
 
 .tile.tile-512 .tile-inner {
@@ -235,11 +235,11 @@ body {
 }
 
 .tile.tile-1024 .tile-inner {
-  background: #C7A27C;
+  background: #a8a54a;
 }
 
 .tile.tile-2048 .tile-inner {
-  background: #FFD972;
+  background: #7f2bad;
 }
 
 .tile .tile-inner {
